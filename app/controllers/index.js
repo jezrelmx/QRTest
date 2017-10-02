@@ -1,24 +1,39 @@
 function doClick(e) {
+	/** Si es un sistema operativo Android */
 	if(OS_ANDROID) {
 		
+		var hasCameraPermissions = Ti.Media.hasCameraPermissions();
+		/** Checa si ya tengo los permisos de camara*/
+		if(!hasCameraPermissions){
+			Ti.Media.requestCameraPermissions(function(e) {
+				if (e.success === true) {
+					escanearQR();
+	        	} else {
+					alert("Acceso denegado, error: " + e.error);
+	        	}
+			});
+		}
+		else {
+			escanearQR();
+		}
 		
-		makeMagic();
-		
-		function makeMagic() {
+		/**metodo que configura el escaneo de codigo QR */	
+		function escanearQR() {
 			/**
 			 * In this example, we'll use the Barcode module to display some information about
 			 * the scanned barcode.
 			 */
-			var Barcode = require('ti.barcode');
+			var Barcode = require('ti.barcode');//este es el nombre del modulo
 			Barcode.allowRotation = true;
 			Barcode.displayedMessage = ' ';
 			Barcode.allowMenu = false;
 			Barcode.allowInstructions = false;
-			Barcode.useLED = true;
-			
+			Barcode.useLED = true;  //el flash de la camara
+			/** Ventana principal*/
 			var window = Ti.UI.createWindow({
 			    backgroundColor: 'white'
 			});
+			/** un scrollView en la ventana principal*/
 			var scrollView = Ti.UI.createScrollView({
 			    contentWidth: 'auto',
 			    contentHeight: 'auto',
@@ -29,14 +44,16 @@ function doClick(e) {
 			
 			/**
 			 * Create a chrome for the barcode scanner.
+			 * overlay es una view para el escaneo con camara 
+			 * es un parametro obligatorio en la creacion del scanner(Barcode.capture)
 			 */
 			var overlay = Ti.UI.createView({
 			    backgroundColor: 'transparent',
-			    top: 0, right: 0, bottom: 0, left: 0,
-			    layout: 'vertical'
+			    top: 0, right: 0, bottom: 0, left: 0
 			});
+			/** boton para cambiar de camara ya sea trasera o delantera*/
 			var switchButton = Ti.UI.createButton({
-			    title: Barcode.useFrontCamera ? 'Back Camera' : 'Front Camera',
+			    title: Barcode.useFrontCamera ? 'Camera Delantera' : 'Camara Trasera',
 			    textAlign: 'center',
 			    color: '#000', backgroundColor: '#fff', style: 0,
 			    font: { fontWeight: 'bold', fontSize: 16 },
@@ -47,17 +64,17 @@ function doClick(e) {
 			});
 			switchButton.addEventListener('click', function () {
 			    Barcode.useFrontCamera = !Barcode.useFrontCamera;
-			    switchButton.title = Barcode.useFrontCamera ? 'Back Camera' : 'Front Camera';
+			    switchButton.title = Barcode.useFrontCamera ? 'Camera Delantera' : 'Camara Trasera';
 			});
 			overlay.add(switchButton);
 			var cancelButton = Ti.UI.createButton({
-			    title: 'Cancel', textAlign: 'center',
+			    title: 'Cancelar', textAlign: 'center',
 			    color: '#000', backgroundColor: '#fff', style: 0,
 			    font: { fontWeight: 'bold', fontSize: 16 },
 			    borderColor: '#000', borderRadius: 10, borderWidth: 1,
 			    opacity: 0.5,
 			    width: 220, height: 30,
-			    top: 20
+			    top: 10
 			});
 			cancelButton.addEventListener('click', function () {
 			    Barcode.cancel();
@@ -68,32 +85,25 @@ function doClick(e) {
 			 * Create a button that will trigger the barcode scanner.
 			 */
 			var scanCode = Ti.UI.createButton({
-			    title: 'Scan Code',
+			    title: 'Scanear código',
 			    width: 150,
 			    height: 60,
 			    top: 20
 			});
 			scanCode.addEventListener('click', function () {
-				Titanium.Media.requestCameraPermissions(function(e) {
-					if (e.success === true) {
-						reset();
-					    // Note: while the simulator will NOT show a camera stream in the simulator, you may still call "Barcode.capture"
-					    // to test your barcode scanning overlay.
-					    Barcode.capture({
-					        animate: true,
-					        overlay: overlay,
-					        showCancel: false,
-					        showRectangle: false,
-					        keepOpen: true/*,
-					        acceptedFormats: [
-					            Barcode.FORMAT_QR_CODE
-					        ]*/
-					    });
-			        } else {
-						alert("Access denied, error: " + e.error);
-			        }
-					
-				})
+			    reset();
+			    // Note: while the simulator will NOT show a camera stream in the simulator, you may still call "Barcode.capture"
+			    // to test your barcode scanning overlay.
+			    Barcode.capture({
+			        animate: true,
+			        overlay: overlay,
+			        showCancel: false,
+			        showRectangle: false,
+			        keepOpen: true/*,
+			        acceptedFormats: [
+			            Barcode.FORMAT_QR_CODE
+			        ]*/
+			    });
 			});
 			scrollView.add(scanCode);
 			
@@ -101,7 +111,7 @@ function doClick(e) {
 			 * Create a button that will show the gallery picker.
 			 */
 			var scanImage = Ti.UI.createButton({
-			    title: 'Scan Image from Gallery',
+			    title: 'Scanear imagen de la galeria',
 			    width: 150, height: 60, top: 20
 			});
 			scanImage.addEventListener('click', function () {
@@ -120,33 +130,43 @@ function doClick(e) {
 			scrollView.add(scanImage);
 			/**
 			 * Now listen for various events from the Barcode module. This is the module's way of communicating with us.
+			 * Se pueden escanear varios codigos QR y estos seran almacenados en la variable scannedBarcodes(objeto)
+			 * tambien hay un contador(scannedBarcodesCount) que enumera los QR escaneados
 			 */
 			var scannedBarcodes = {}, scannedBarcodesCount = 0;
+			/**
+			 * Metodo que inicializa las variables a cero
+			 * es invocado tanto en escanear de camara como el escaneo de galeria
+			 */
 			function reset() {
 			    scannedBarcodes = {};
 			    scannedBarcodesCount = 0;
-			    cancelButton.title = 'Cancel';
+			    cancelButton.title = 'Cancelar';
 			
 			    scanResult.text = ' ';
 			    scanContentType.text = ' ';
 			    scanFormat.text = ' ';
 			    scanParsed.text = ' ';
 			}
+			/** Si el escaneo manda error*/
 			Barcode.addEventListener('error', function (e) {
 			    scanContentType.text = ' ';
 			    scanFormat.text = ' ';
 			    scanParsed.text = ' ';
 			    scanResult.text = e.message;
 			});
+			/** Si el escaneo manda cancelado*/
 			Barcode.addEventListener('cancel', function (e) {
-			    Ti.API.info('Cancel received');
+			    Ti.API.info('Cancelado');
 			});
+			/** Si el escaneo manda exito*/
 			Barcode.addEventListener('success', function (e) {
-			    Ti.API.info('Success called with barcode: ' + e.result);
+			    Ti.API.info('Exito al escanear: ' + e.result);
+			    /** Si no esta ya almacenado ese QR entonces lo guarda*/
 			    if (!scannedBarcodes['' + e.result]) {
 			        scannedBarcodes[e.result] = true;
 			        scannedBarcodesCount += 1;
-			        cancelButton.title = 'Finished (' + scannedBarcodesCount + ' Scanned)';
+			        cancelButton.title = 'Terminado (' + scannedBarcodesCount + ' Escaneado)';
 			
 			        scanResult.text += e.result + ' ';
 			        scanContentType.text += parseContentType(e.contentType) + ' ';
@@ -160,13 +180,13 @@ function doClick(e) {
 			 * to these labels.
 			 */
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'You may need to rotate the device',
+			    text: 'Talvez necesites rotar tu dispositivo',
 			    top: 10,
 			    height: Ti.UI.SIZE || 'auto', width: Ti.UI.SIZE || 'auto'
 			}));
 			
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'Result: ', textAlign: 'left',
+			    text: 'Resultado: ', textAlign: 'left',
 			    top: 10, left: 10,
 			    color: 'black',
 			    height: Ti.UI.SIZE || 'auto'
@@ -180,7 +200,7 @@ function doClick(e) {
 			scrollView.add(scanResult);
 			
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'Content Type: ',
+			    text: 'Tipo de contenido: ',
 			    top: 10, left: 10,
 			    textAlign: 'left',
 			    color: 'black',
@@ -195,7 +215,7 @@ function doClick(e) {
 			scrollView.add(scanContentType);
 			
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'Format: ', textAlign: 'left',
+			    text: 'Formato: ', textAlign: 'left',
 			    top: 10, left: 10,
 			    color: 'black',
 			    height: Ti.UI.SIZE || 'auto'
@@ -222,6 +242,9 @@ function doClick(e) {
 			});
 			scrollView.add(scanParsed);
 			
+			/** Regresa el tipo de informacion que contiene el codigo QR
+			* @param contentType= es el tipo de contenido (e.contentType)
+			*/
 			function parseContentType(contentType) {
 			    switch (contentType) {
 			        case Barcode.URL:
@@ -229,26 +252,30 @@ function doClick(e) {
 			        case Barcode.SMS:
 			            return 'SMS';
 			        case Barcode.TELEPHONE:
-			            return 'TELEPHONE';
+			            return 'TELEFONO';
 			        case Barcode.TEXT:
-			            return 'TEXT';
+			            return 'TEXTO';
 			        case Barcode.CALENDAR:
-			            return 'CALENDAR';
+			            return 'CALENDARIO';
 			        case Barcode.GEOLOCATION:
-			            return 'GEOLOCATION';
+			            return 'GEOLOCALIZACION';
 			        case Barcode.EMAIL:
 			            return 'EMAIL';
 			        case Barcode.CONTACT:
-			            return 'CONTACT';
+			            return 'CONTACTO';
 			        case Barcode.BOOKMARK:
-			            return 'BOOKMARK';
+			            return 'MARCADOR';
 			        case Barcode.WIFI:
 			            return 'WIFI';
 			        default:
-			            return 'UNKNOWN';
+			            return 'DESCONOCIDO';
 			    }
 			}
-			
+
+			/**
+			 * @param  object event is passed to event handlers
+			 * @return msg which is the format of the content type 
+			 */
 			function parseResult(event) {
 			    var msg = '';
 			    switch (event.contentType) {
@@ -287,40 +314,48 @@ function doClick(e) {
 			    }
 			    return msg;
 			}
-			
+
 			window.add(scrollView);
 			window.open();
-
 		}
 	}
-	
+	/** Si el sistema operativo es IOS*/
 	if(OS_IOS) {
+
+		var hasCameraPermissions = Ti.Media.hasCameraPermissions();
+		var hasPhotoGalleryPermissions = Ti.Media.hasPhotoGalleryPermissions();
+
 		Ti.Media.requestPhotoGalleryPermissions(function(e) {
 			if (e.success === true) {
-				makeMagic();
+				escanearQR();
 	        } else {
-				alert("Access denied, error: " + e.error);
+				alert("Acceso denegado, error: " + e.error);
 	        }
 		});
+		/** Checa si ya tengo los permisos de camara*/
+		if(!hasCameraPermissions){
+			Ti.Media.requestCameraPermissions(function(e) {
+				if (e.success === true) {
+					escanearQR();
+		        } else {
+					alert("Acceso denegado, error: " + e.error);
+		        }
+			});
+		}else {
+			escanearQR();
+		}
 		
-		Ti.Media.requestCameraPermissions(function(e) {
-			if (e.success === true) {
-				makeMagic();
-	        } else {
-				alert("Access denied, error: " + e.error);
-	        }
-		});
-		
-		function makeMagic() {
+		/**metodo que configura el escaneo de codigo QR */	
+		function escanearQR() {
 			/**
 			 * In this example, we'll use the Barcode module to display some information about
 			 * the scanned barcode.
 			 */
-			var Barcode = require('ti.barcode');
+			var Barcode = require('ti.barcode');//este es el nombre del modulo
 			Barcode.allowRotation = true;
 			Barcode.displayedMessage = 'Este es el mensaje';
-			Barcode.useLED = false;
-			
+			Barcode.useLED = false; //el flash de la camara
+			/** Ventana principal*/
 			var window = Ti.UI.createWindow({
 			    backgroundColor: 'white'
 			});
@@ -334,14 +369,17 @@ function doClick(e) {
 			
 			/**
 			 * Create a chrome for the barcode scanner.
+			 * overlay es una view para el escaneo con camara 
+			 * es un parametro obligatorio en la creacion del scanner(Barcode.capture)
 			 */
 			var overlay = Ti.UI.createView({
 			    backgroundColor: 'transparent',
 			    top: 0, right: 0, bottom: 0, left: 0,
 			    layout : 'vertical'
 			});
+			/** boton para cambiar de camara ya sea trasera o delantera*/
 			var switchButton = Ti.UI.createButton({
-			    title: Barcode.useFrontCamera ? 'Back Camera' : 'Front Camera',
+			    title: Barcode.useFrontCamera ? 'Camera Delantera' : 'Camara Trasera',
 			    textAlign: 'center',
 			    color: '#000', backgroundColor: '#fff', style: 0,
 			    font: { fontWeight: 'bold', fontSize: 16 },
@@ -352,10 +390,11 @@ function doClick(e) {
 			});
 			switchButton.addEventListener('click', function () {
 			    Barcode.useFrontCamera = !Barcode.useFrontCamera;
-			    switchButton.title = Barcode.useFrontCamera ? 'Back Camera' : 'Front Camera';
+			    switchButton.title = Barcode.useFrontCamera ? 'Camera Delantera' : 'Camara Trasera';
 			});
 			overlay.add(switchButton);
-			
+			/**
+			*esta funcion solo esta disponible para el Sistema operativo IOS
 			var toggleLEDButton = Ti.UI.createButton({
 			    title: Barcode.useLED ? 'LED is On' : 'LED is Off',
 			    textAlign: 'center',
@@ -371,7 +410,7 @@ function doClick(e) {
 			    toggleLEDButton.title = Barcode.useLED ? 'LED is On' : 'LED is Off';
 			});
 			overlay.add(toggleLEDButton);
-			
+			*/
 			var cancelButton = Ti.UI.createButton({
 			    title: 'Cancel', textAlign: 'center',
 			    color: '#000', backgroundColor: '#fff', style: 0,
@@ -390,13 +429,13 @@ function doClick(e) {
 			 * Create a button that will trigger the barcode scanner.
 			 */
 			var scanCode = Ti.UI.createButton({
-			    title: 'Scan Code',
+			    title: 'Scanear código',
 			    width: 200,
 			    height: 60,
 			    top: 20
 			});
 			scanCode.addEventListener('click', function () {
-			    // reset();
+			    //reset();  //si se comenta se almacena en 'scannedBarcodes' toda la info de los QR que sean escaneados
 			    // Note: while the simulator will NOT show a camera stream in the simulator, you may still call "Barcode.capture"
 			    // to test your barcode scanning overlay.
 			    Barcode.capture({
@@ -416,7 +455,7 @@ function doClick(e) {
 			 * Create a button that will show the gallery picker.
 			 */
 			var scanImage = Ti.UI.createButton({
-			    title: 'Scan Image from Gallery',
+			    title: 'Scanear imagen de la galeria',
 			    width: 200, height: 60, top: 20
 			});
 			scanImage.addEventListener('click', function () {
@@ -436,31 +475,42 @@ function doClick(e) {
 			
 			/**
 			 * Now listen for various events from the Barcode module. This is the module's way of communicating with us.
+			 * Los codigos QR escaneados seran almacenados en la variable scannedBarcodes(objeto json)
+			 * tambien hay un contador(scannedBarcodesCount) que enumera los QR escaneados
 			 */
 			var scannedBarcodes = {}, scannedBarcodesCount = 0;
+			/**
+			 * Metodo que inicializa las variables a cero
+			 * es invocado tanto en escanear de camara como el escaneo de galeria
+			 */
 			function reset() {
 			    scannedBarcodes = {};
 			    scannedBarcodesCount = 0;
-			    cancelButton.title = 'Cancel';
+			    cancelButton.title = 'Cancelar';
 			
 			    scanResult.text = ' ';
 			    scanContentType.text = ' ';
 			    scanParsed.text = ' ';
 			}
+			/** Si el escaneo manda error*/
 			Barcode.addEventListener('error', function (e) {
 			    scanContentType.text = ' ';
 			    scanParsed.text = ' ';
 			    scanResult.text = e.message;
 			});
+			/** Si el escaneo manda cancelado*/
 			Barcode.addEventListener('cancel', function (e) {
-			    Ti.API.info('Cancel received');
+			    Ti.API.info('Cancelado');
 			});
+			/** Si el escaneo manda exito*/
 			Barcode.addEventListener('success', function (e) {
-			    Ti.API.info('Success called with barcode: ' + e.result);
+			    Ti.API.info('Exito al escanear: ' + e.result);
+			    /** Si no esta ya almacenado ese QR entonces lo guarda*/
+			    //console.log(JSON.stringify(scannedBarcodes)); -> example of a result: {"http://goo.gl/70hW4":true} 
 			    if (!scannedBarcodes['' + e.result]) {
 			        scannedBarcodes[e.result] = true;
 			        scannedBarcodesCount += 1;
-			        cancelButton.title = 'Finished (' + scannedBarcodesCount + ' Scanned)';
+			        cancelButton.title = 'Terminado (' + scannedBarcodesCount + ' Escaneado)';
 			
 			        scanResult.text += e.result + ' ';
 			        scanContentType.text += parseContentType(e.contentType) + ' ';
@@ -473,13 +523,13 @@ function doClick(e) {
 			 * to these labels.
 			 */
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'You may need to rotate the device',
+			    text: 'Talvez necesites rotar tu dispositivo',
 			    top: 10,
 			    height: Ti.UI.SIZE || 'auto', width: Ti.UI.SIZE || 'auto'
 			}));
 			
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'Result: ', textAlign: 'left',
+			    text: 'Resultado: ', textAlign: 'left',
 			    top: 10, left: 10,
 			    color: 'black',
 			    height: Ti.UI.SIZE || 'auto'
@@ -493,7 +543,7 @@ function doClick(e) {
 			scrollView.add(scanResult);
 			
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'Content Type: ',
+			    text: 'Tipo de contenido: ',
 			    top: 10, left: 10,
 			    textAlign: 'left',
 			    color: 'black',
@@ -508,7 +558,7 @@ function doClick(e) {
 			scrollView.add(scanContentType);
 			
 			scrollView.add(Ti.UI.createLabel({
-			    text: 'Parsed: ', textAlign: 'left',
+			    text: 'Todos los contenidos escaneados: ', textAlign: 'left',
 			    top: 10, left: 10,
 			    color: 'black',
 			    height: Ti.UI.SIZE || 'auto'
@@ -521,6 +571,7 @@ function doClick(e) {
 			});
 			scrollView.add(scanParsed);
 			
+			/** Regresa el tipo de informacion que contiene el codigo QR*/
 			function parseContentType(contentType) {
 			    switch (contentType) {
 			        case Barcode.URL:
@@ -548,6 +599,10 @@ function doClick(e) {
 			    }
 			}
 			
+			/**
+			 * @param  object event is passed to event handlers
+			 * @return msg which is the format of the content type 
+			 */
 			function parseResult(event) {
 			    var msg = '';
 			    switch (event.contentType) {
@@ -588,13 +643,9 @@ function doClick(e) {
 			}
 			
 			window.add(scrollView);
-			window.open();
-				
+			window.open();			
 		}
 	}
-
-	
 	
 }
-
 $.index.open();
