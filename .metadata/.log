@@ -1,0 +1,139 @@
+!SESSION 2017-09-26 21:57:20.803 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_144
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=es_MX
+Command-line arguments:  -os linux -ws gtk -arch x86_64
+
+!ENTRY com.appcelerator.titanium.core 4 0 2017-09-26 21:58:02.941
+!MESSAGE (Build 4.9.0.1473142814) [ERROR]  Invalid saved login user details. Logging in as anonymous
+
+!ENTRY com.appcelerator.titanium.core 4 0 2017-09-26 21:58:13.827
+!MESSAGE (Build 4.9.0.201705302345) [ERROR]  null
+!STACK 0
+Unexpected character (A) at position 0.
+	at org.json.simple.parser.Yylex.yylex(Yylex.java:611)
+	at org.json.simple.parser.JSONParser.nextToken(JSONParser.java:270)
+	at org.json.simple.parser.JSONParser.parse(JSONParser.java:119)
+	at org.json.simple.parser.JSONParser.parse(JSONParser.java:82)
+	at org.json.simple.parser.JSONParser.parse(JSONParser.java:76)
+	at com.appcelerator.titanium.core.preferences.TitaniumPrefSync.syncCliToStudio(TitaniumPrefSync.java:136)
+	at com.appcelerator.titanium.core.preferences.TitaniumPrefSync.access$0(TitaniumPrefSync.java:128)
+	at com.appcelerator.titanium.core.preferences.TitaniumPrefSync$1.run(TitaniumPrefSync.java:61)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY com.appcelerator.titanium.core 4 0 2017-09-26 21:58:17.762
+!MESSAGE (Build 4.9.0.201705302345) [ERROR]  Unrecognized token 'Appcelerator': was expecting ('true', 'false' or 'null')
+ at [Source: Appcelerator Login required to continue ...
+
+An uncaught exception was thrown!
+Cannot read property 'name' of undefined; line: 1, column: 13]
+!STACK 1
+org.eclipse.core.runtime.CoreException: Unrecognized token 'Appcelerator': was expecting ('true', 'false' or 'null')
+ at [Source: Appcelerator Login required to continue ...
+
+An uncaught exception was thrown!
+Cannot read property 'name' of undefined; line: 1, column: 13]
+	at com.appcelerator.titanium.core.user.TitaniumUser.doGetOrganizations(TitaniumUser.java:389)
+	at com.appcelerator.titanium.core.user.TitaniumUser.getOrganizations(TitaniumUser.java:291)
+	at com.appcelerator.titanium.core.user.TitaniumUser.getOrganizationById(TitaniumUser.java:416)
+	at com.appcelerator.titanium360.internal.ui.launch.DeveloperAccountListener.isDeveloperAccount(DeveloperAccountListener.java:74)
+	at com.appcelerator.titanium360.internal.ui.launch.DeveloperAccountListener.access$0(DeveloperAccountListener.java:64)
+	at com.appcelerator.titanium360.internal.ui.launch.DeveloperAccountListener$1.run(DeveloperAccountListener.java:37)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'Appcelerator': was expecting ('true', 'false' or 'null')
+ at [Source: Appcelerator Login required to continue ...
+
+An uncaught exception was thrown!
+Cannot read property 'name' of undefined; line: 1, column: 13]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1486)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:518)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._reportInvalidToken(ReaderBasedJsonParser.java:2300)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(ReaderBasedJsonParser.java:1459)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:683)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3600)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3545)
+	at com.fasterxml.jackson.databind.ObjectMapper.readTree(ObjectMapper.java:2134)
+	at com.appcelerator.titanium.core.user.TitaniumUser.doGetOrganizations(TitaniumUser.java:382)
+	... 6 more
+!SUBENTRY 1 com.appcelerator.titanium.core 4 0 2017-09-26 21:58:17.763
+!MESSAGE Unrecognized token 'Appcelerator': was expecting ('true', 'false' or 'null')
+ at [Source: Appcelerator Login required to continue ...
+
+An uncaught exception was thrown!
+Cannot read property 'name' of undefined; line: 1, column: 13]
+!STACK 0
+com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'Appcelerator': was expecting ('true', 'false' or 'null')
+ at [Source: Appcelerator Login required to continue ...
+
+An uncaught exception was thrown!
+Cannot read property 'name' of undefined; line: 1, column: 13]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1486)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:518)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._reportInvalidToken(ReaderBasedJsonParser.java:2300)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(ReaderBasedJsonParser.java:1459)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:683)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3600)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3545)
+	at com.fasterxml.jackson.databind.ObjectMapper.readTree(ObjectMapper.java:2134)
+	at com.appcelerator.titanium.core.user.TitaniumUser.doGetOrganizations(TitaniumUser.java:382)
+	at com.appcelerator.titanium.core.user.TitaniumUser.getOrganizations(TitaniumUser.java:291)
+	at com.appcelerator.titanium.core.user.TitaniumUser.getOrganizationById(TitaniumUser.java:416)
+	at com.appcelerator.titanium360.internal.ui.launch.DeveloperAccountListener.isDeveloperAccount(DeveloperAccountListener.java:74)
+	at com.appcelerator.titanium360.internal.ui.launch.DeveloperAccountListener.access$0(DeveloperAccountListener.java:64)
+	at com.appcelerator.titanium360.internal.ui.launch.DeveloperAccountListener$1.run(DeveloperAccountListener.java:37)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY com.appcelerator.titanium.ui 4 0 2017-09-26 21:58:32.548
+!MESSAGE (Build 4.9.0.201705302345) [ERROR]  no protocol: Appcelerator Login required to continue ...
+
+An uncaught exception was thrown!
+Cannot read property 'name' of undefined
+!STACK 0
+java.net.MalformedURLException: no protocol: Appcelerator Login required to continue ...
+
+An uncaught exception was thrown!
+Cannot read property 'name' of undefined
+	at java.net.URL.<init>(URL.java:593)
+	at java.net.URL.<init>(URL.java:490)
+	at java.net.URL.<init>(URL.java:439)
+	at com.appcelerator.titanium.ui.dashboard.DashboardManager$1.run(DashboardManager.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SESSION 2017-09-27 16:06:51.087 -----------------------------------------------
+eclipse.buildId=4.9.0.201705302345
+java.version=1.8.0_144
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=es_MX
+Command-line arguments:  -os linux -ws gtk -arch x86_64
+
+!ENTRY org.eclipse.core.jobs 4 2 2017-09-27 16:25:21.880
+!MESSAGE An internal error occurred during: "Updates scheduling job...".
+!STACK 0
+java.lang.NullPointerException
+	at com.appcelerator.titanium.core.mobile.MobileSDKEntity.getMobilePlatformRegistry(MobileSDKEntity.java:110)
+	at com.appcelerator.titanium.core.mobile.MobileSDKEntity.resolveSupportedPlatforms(MobileSDKEntity.java:75)
+	at com.appcelerator.titanium.core.mobile.MobileSDKEntity.<init>(MobileSDKEntity.java:70)
+	at com.appcelerator.titanium.core.mobile.TitaniumMobileSDKLocator$2.map(TitaniumMobileSDKLocator.java:254)
+	at com.appcelerator.titanium.core.mobile.TitaniumMobileSDKLocator$2.map(TitaniumMobileSDKLocator.java:1)
+	at com.aptana.core.util.CollectionsUtil.map(CollectionsUtil.java:432)
+	at com.aptana.core.util.CollectionsUtil.map(CollectionsUtil.java:466)
+	at com.appcelerator.titanium.core.mobile.TitaniumMobileSDKLocator.fallbackInitialize(TitaniumMobileSDKLocator.java:249)
+	at com.appcelerator.titanium.core.mobile.TitaniumMobileSDKLocator.initialize(TitaniumMobileSDKLocator.java:172)
+	at com.appcelerator.titanium.core.mobile.SDKLocator.lazyInitialize(SDKLocator.java:237)
+	at com.appcelerator.titanium.core.mobile.SDKLocator.getAvailable(SDKLocator.java:391)
+	at com.appcelerator.titanium.update.internal.core.TitaniumReleasesUpdater.getSDKStableInstalledVersion(TitaniumReleasesUpdater.java:587)
+	at com.appcelerator.titanium.update.internal.core.TitaniumReleasesUpdater.getLatestSDKRelease(TitaniumReleasesUpdater.java:832)
+	at com.appcelerator.titanium.update.internal.core.TitaniumReleasesUpdater.getAvailableUpdates(TitaniumReleasesUpdater.java:301)
+	at com.appcelerator.titanium.update.ui.TitaniumUpdateStartup.hasToInstallPackages(TitaniumUpdateStartup.java:219)
+	at com.appcelerator.titanium.update.ui.TitaniumUpdateStartup.access$0(TitaniumUpdateStartup.java:217)
+	at com.appcelerator.titanium.update.ui.TitaniumUpdateStartup$2.run(TitaniumUpdateStartup.java:167)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.core.jobs 2 2 2017-09-27 16:25:22.893
+!MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: com.appcelerator.titanium360.internal.ui.launch.DeveloperAccountListener$1
+
+!ENTRY org.eclipse.core.jobs 2 2 2017-09-27 16:25:22.893
+!MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: com.appcelerator.titanium.ui.dashboard.DashboardManager$1
+
+!ENTRY org.eclipse.core.jobs 2 2 2017-09-27 16:25:22.894
+!MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: com.appcelerator.titanium.core.preferences.TitaniumPrefSync$1
