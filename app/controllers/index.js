@@ -17,18 +17,25 @@ function doClick(e) {
 			escanearQR();
 		}
 		
-		/**metodo que configura el escaneo de codigo QR */	
+		/**metodo que configura el escaneo de codigo QR 
+		 */	
 		function escanearQR() {
 			/**
 			 * In this example, we'll use the Barcode module to display some information about
 			 * the scanned barcode.
+			 *tiene las siguientes propiedades: 
+			 *allowRotation: si es true permite escanear un còdigo QR en las dos orientaciones: portrait y landscape
+			 *displayedMessage: el mensaje que se muestra al momento de escanear (overlay)
+			 *allowMenu: true para mostrar el menu de ZXing (solo para Android)
+			 *allowInstructions: muestra instrucciones de ayuda y cambios cuando la app es actualizada (solo Android)
+			 *useLED: activa el flash de la camara
 			 */
 			var Barcode = require('ti.barcode');//este es el nombre del modulo
 			Barcode.allowRotation = true;
-			Barcode.displayedMessage = ' ';
-			Barcode.allowMenu = false;
+			Barcode.displayedMessage = '';
+			Barcode.allowMenu = true;
 			Barcode.allowInstructions = false;
-			Barcode.useLED = true;  //el flash de la camara
+			Barcode.useLED = false; 
 			/** Ventana principal*/
 			var window = Ti.UI.createWindow({
 			    backgroundColor: 'white'
@@ -44,14 +51,19 @@ function doClick(e) {
 			
 			/**
 			 * Create a chrome for the barcode scanner.
-			 * overlay es una view para el escaneo con camara 
+			 * overlay es una view donde se muestra lo que esta viendo la camara.
 			 * es un parametro obligatorio en la creacion del scanner(Barcode.capture)
 			 */
 			var overlay = Ti.UI.createView({
 			    backgroundColor: 'transparent',
 			    top: 0, right: 0, bottom: 0, left: 0
 			});
-			/** boton para cambiar de camara ya sea trasera o delantera*/
+			/** boton para cambiar de camara ya sea trasera o delantera
+			 *Barcode.useFrontCamera: regresa false si esta usando la camara delantera
+			 *regresa true si se esta usando la camara trasera(selfie)
+			 *si el dispositivo no cuenta con camara trasera usara la camara que este disponible
+			 *propìedad style es solo para IOS. Es para el estilo del boton (color,borde, background)
+			 */
 			var switchButton = Ti.UI.createButton({
 			    title: Barcode.useFrontCamera ? 'Camera Delantera' : 'Camara Trasera',
 			    textAlign: 'center',
@@ -94,6 +106,26 @@ function doClick(e) {
 			    reset();
 			    // Note: while the simulator will NOT show a camera stream in the simulator, you may still call "Barcode.capture"
 			    // to test your barcode scanning overlay.
+			    /**
+			     * Barcode.capture: Activa la cámara y comienza la captura para procesar un código de barras: tienes las siguientes propiedades:
+			     * animate: ************indica si se debe continuar en el caso de que la actividad actual y la actividad de la camara esten en distinta orientacion
+			     * overlay es una view donde se muestra la actividad de la camara.
+			     * showCancel: si incluir o no el boton de "cancelar"
+			     * showRectangle: para incluir o no un rectangulo alrededor del area de escaner
+			     * KeepOpen: true para mantener abierto el escaner despues de que se haya escaneado un codigo QR
+			     * acceptedFormats: Una matriz opcional de constantes int que detalla qué formatos de código se aceptan.De forma predeterminada a todos los formatos.
+			     * <<<<<<<Barcode Format Constants:
+					FORMAT_NONE[int]
+					FORMAT_QR_CODE[int]
+					FORMAT_DATA_MATRIX[int]
+					FORMAT_UPC_E[int]
+					FORMAT_UPC_A[int]
+					FORMAT_EAN_8[int]
+					FORMAT_EAN_13[int]
+					FORMAT_CODE_128[int]
+					FORMAT_CODE_39[int]
+					FORMAT_ITF[int] >>>>>>>
+			     */
 			    Barcode.capture({
 			        animate: true,
 			        overlay: overlay,
@@ -118,6 +150,11 @@ function doClick(e) {
 			    reset();
 			    Ti.Media.openPhotoGallery({
 			        success: function (evt) {
+			        	/**
+			        	 *Barcode.parse: analiza un imagen para codigo QR. Tiene las sig propiedades:
+			        	 *image: The image blob to parse for a barcode.
+			        	 *acceptedFormats: Una matriz opcional de constantes int que detalla qué formatos de código se aceptan
+			        	 */
 			            Barcode.parse({
 			                image: evt.media/*,
 			                acceptedFormats: [
@@ -159,7 +196,14 @@ function doClick(e) {
 			Barcode.addEventListener('cancel', function (e) {
 			    Ti.API.info('Cancelado');
 			});
-			/** Si el escaneo manda exito*/
+			/** Si el escaneo manda exito
+			*the event object contains the following fields:
+			*format[string, Android only] : The format of the barcode
+    		*result[string] : The raw contents of the barcode
+    		*code[string, Android only] : The activity result code from the scanning activity. Use the result constants defined in the Ti.Android namespace
+    		*contentType[int] : The type of barcode content. Use the constants defined in this module to determine which.
+    		*data[object]: The parsed fields associated with the contentType.
+			*/
 			Barcode.addEventListener('success', function (e) {
 			    Ti.API.info('Exito al escanear: ' + e.result);
 			    /** Si no esta ya almacenado ese QR entonces lo guarda*/
@@ -353,8 +397,8 @@ function doClick(e) {
 			 */
 			var Barcode = require('ti.barcode');//este es el nombre del modulo
 			Barcode.allowRotation = true;
-			Barcode.displayedMessage = 'Este es el mensaje';
-			Barcode.useLED = false; //el flash de la camara
+			Barcode.displayedMessage = 'SmartCDMX ';
+			Barcode.useLED = false;
 			/** Ventana principal*/
 			var window = Ti.UI.createWindow({
 			    backgroundColor: 'white'
@@ -421,7 +465,8 @@ function doClick(e) {
 			    top: 20
 			});
 			cancelButton.addEventListener('click', function () {
-			    Barcode.cancel();
+				console.log('esto imprime el barcode cancel:');
+			    console.log(Barcode.cancel());
 			});
 			overlay.add(cancelButton);
 			
@@ -439,7 +484,7 @@ function doClick(e) {
 			    // Note: while the simulator will NOT show a camera stream in the simulator, you may still call "Barcode.capture"
 			    // to test your barcode scanning overlay.
 			    Barcode.capture({
-			        animate: true,
+			        animate: false,
 			        overlay: overlay,
 			        showCancel: false,
 			        showRectangle: false,
