@@ -1,0 +1,7 @@
+<!--overlay es una view donde se muestra lo que esta viendo la camara.
+es un parametro obligatorio en la configuracion del escanner(Barcode.capture) -->
+<Alloy>
+	<View class="container">
+		<Button id="cancelButton" onClick="cancelar">Cancelar</Button>
+	</View>
+</Alloy>

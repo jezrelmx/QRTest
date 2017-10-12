@@ -1,0 +1,18 @@
+<Alloy>
+	<!--Ventana principal, exitOnClose: para salir de la aplicacion si se presiona el botón de hacia atras en el telefono, fullscreen: tomar toda la pantalla -->
+	<Window id="winQR" class="container" exitOnClose="true" fullscreen="false"> 
+		<!--Botón que activará el escáner de código QR -->	
+		<Button id="btnEscanear" onClick="escanearQR">Escanear código QR</Button>
+		<!--Botón que abre la galería para escanear una imagen-->
+		<Button id="btnGallery" onClick="escanearGalleria">Escanear imagen de la galería</Button>
+		<!--Etiqueta que contendra el resultado -->
+		<Label>Resultado: </Label>
+		<Label id="scanResult"> </Label>
+		<!--Etiqueta que contendra el tipo de contenido -->
+		<Label>Tipo de contenido: </Label>
+		<Label id="scanContentType"> </Label>
+		<!--Etiqueta que contendra el Formato(String), ejemplo:QR_CODE -->
+		<Label>Formato: </Label>
+		<Label id="scanFormat"> </Label>
+    </Window>
+</Alloy>
