@@ -1,15 +1,20 @@
-".container": {
-	backgroundColor:"white"
+".container" : {
+	backgroundColor:"white",
+	title:"Menu",
+	layout:"vertical"
+},
+"Button": {
+	top:"20",
+	width:"100",
+	height:"60",
+	backgroundColor:"#fff3e0",
+	color: "black"
 }
-
 "Label": {
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE,
-	color: "#000"
+	textAlign: 'left',
+	top: 10, 
+	left: 10,
+	color: 'black',
+	height: Ti.UI.SIZE
 }
 
-"#label": {
-	font: {
-		fontSize: 12
-	}
-}

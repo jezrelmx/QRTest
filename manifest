@@ -1,8 +1,8 @@
-#appname:QRTest
-#publisher:jezrel_mx
-#url:undefined
-#image:appicon.png
-#appid:mx.gob.cdmx.om.cgma.QRTest
-#desc:undefined
-#type:mobile
-#guid:d597f3dc-91af-48b8-9999-edd404515ee7
+#appname: ScannerQR
+#publisher: ffca
+#url: 
+#image: appicon.png
+#appid: com.cgma.ScannerQR
+#desc: undefined
+#type: mobile
+#guid: 67c34f95-293d-460d-9111-d61bd0e98e17

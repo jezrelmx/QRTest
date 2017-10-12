@@ -1,0 +1,6 @@
+".container" : {
+	layout: "vertical"
+}
+"#cancelButton" :{
+	top: 300
+}
