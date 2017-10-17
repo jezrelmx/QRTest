@@ -1,46 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <id>com.cgma.ScannerQR</id>
-    <name>ScannerQR</name>
+    <id>mx.gob.cdmx.om.cgma.QRTest</id>
+    <name>QRTest</name>
     <version>1.0</version>
-    <publisher>ffca</publisher>
-    <url/>
-    <description/>
-    <copyright>2017 by ffca</copyright>
+    <publisher>jezrel_mx</publisher>
+    <url>undefined</url>
+    <description>undefined</description>
+    <copyright>2017 by jezrel_mx</copyright>
     <icon>appicon.png</icon>
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
     <analytics>true</analytics>
-    <guid>67c34f95-293d-460d-9111-d61bd0e98e17</guid>
+    <guid>d597f3dc-91af-48b8-9999-edd404515ee7</guid>
     <property name="ti.ui.defaultunit" type="string">dp</property>
     <property name="run-on-main-thread" type="bool">true</property>
     <ios>
-        <enable-launch-screen-storyboard>true</enable-launch-screen-storyboard>
-        <use-app-thinning>true</use-app-thinning>
-        <plist>
-            <dict>
-                <key>UISupportedInterfaceOrientations~iphone</key>
-                <array>
-                    <string>UIInterfaceOrientationPortrait</string>
-                </array>
-                <key>UISupportedInterfaceOrientations~ipad</key>
-                <array>
-                    <string>UIInterfaceOrientationPortrait</string>
-                    <string>UIInterfaceOrientationPortraitUpsideDown</string>
-                    <string>UIInterfaceOrientationLandscapeLeft</string>
-                    <string>UIInterfaceOrientationLandscapeRight</string>
-                </array>
-                <key>UIRequiresPersistentWiFi</key>
-                <false/>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-                <key>UIStatusBarHidden</key>
-                <false/>
-                <key>UIStatusBarStyle</key>
-                <string>UIStatusBarStyleDefault</string>
-            </dict>
-        </plist>
-    </ios>
+ 		<enable-launch-screen-storyboard>true</enable-launch-screen-storyboard>
+ 		<use-app-thinning>true</use-app-thinning>
+ 		<plist>
+ 			<dict>
+ 				<key>NSPhotoLibraryUsageDescription</key>
+ 				<string>Me das chance de ver tus fotitos?</string>
+ 				<key>NSCameraUsageDescription</key>
+ 				<string>Can we use your camera?</string>
+ 				<key>UISupportedInterfaceOrientations~iphone</key>
+ 				<array>
+ 					<string>UIInterfaceOrientationPortrait</string>
+ 				</array>
+ 				<key>UISupportedInterfaceOrientations~ipad</key>
+ 				<array>
+ 					<string>UIInterfaceOrientationPortrait</string>
+ 					<string>UIInterfaceOrientationPortraitUpsideDown</string>
+ 					<string>UIInterfaceOrientationLandscapeLeft</string>
+ 					<string>UIInterfaceOrientationLandscapeRight</string>
+ 				</array>
+ 				<key>UIRequiresPersistentWiFi</key>
+ 				<false/>
+ 				<key>UIPrerenderedIcon</key>
+ 				<false/>
+ 				<key>UIStatusBarHidden</key>
+ 				<false/>
+ 				<key>UIStatusBarStyle</key>
+ 				<string>UIStatusBarStyleDefault</string>
+ 			</dict>
+ 		</plist>
+ 	</ios>
     <android xmlns:android="http://schemas.android.com/apk/res/android"/>
     <mobileweb>
         <precache/>
@@ -51,6 +55,7 @@
         <theme>default</theme>
     </mobileweb>
     <modules>
+        <module platform="iphone" version="1.10.1">ti.barcode</module>
         <module platform="android" version="3.1.0">ti.barcode</module>
     </modules>
     <deployment-targets>
