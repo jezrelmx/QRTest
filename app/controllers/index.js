@@ -1,54 +1,50 @@
 /////////////////////////////////////VARIABLES/////////////////////////
 /**
- códigos QR seran almacenados en la variable scannedBarcodes(objeto JSON)
- console.log(JSON.stringify(scannedBarcodes)); -> example of a result: {"http://goo.gl/70hW4":true} 
- un contador(scannedBarcodesCount) que enumera los QR escaneados
+ Los códigos QR escaneados seran almacenados en la variable scannedBarcodes(objeto JSON)
+ ejemplo de console.log(JSON.stringify(scannedBarcodes)); -> resultado: {"http://goo.gl/70hW4":true} 
  */
-var scannedBarcodes = {}, scannedBarcodesCount = 0;
+var scannedBarcodes = {};
 
 /**   CONFIGURACION DEL MODULO
  El modulo ti.barcode tiene las siguientes propiedades: 
  allowRotation: si es true permite escanear un còdigo QR en las dos orientaciones: portrait y landscape
- displayedMessage: el mensaje que se muestra al momento de escanear (overlay)
+ displayedMessage: el mensaje que se muestra al momento de abrir la camara, abajo del boton de cancelar.
  useFrontCamera: Controla si se usara la camara delantera para escanear. Si no hay camara delantera se usara la que este disponible, true: para camara trasera(selfie), false: para camara delantera
  useLED: activa el flash de la camara
  */
 var Barcode = require('ti.barcode');//se carga el modulo
-/////////////////////////////////PROPIEDADES/////////////////////////////
+/////////////////////////////////CONFIGURACION/////////////////////////////
 Barcode.allowRotation = true;
 Barcode.displayedMessage = 'Coloca el código QR dentro del visor rectangular para escanearlo';
-Barcode.useFrontCamera= false;
-Barcode.useLED = false; 
+Barcode.useFrontCamera= false; //default
+Barcode.useLED = false; //defautl
 
 //////////////////////////////////// EVENTOS///////////////////////////
-
 /**  
- * Se Ti.Barcode.addEventListener() usa para procesar los siguientes eventos son enviados de el modulo:success,error,cancel.
+ * Ti.Barcode.addEventListener() usa para procesar los siguientes eventos son enviados de el modulo:success,error,cancel.
  */
 
-/**Si el escaneo es exitoso:
+/**Si el escaneo es exitoso: muestra tres resultados(Resultado,tipo de contenido y Formato)
 El objeto del evento (e) contiene los siguientes métodos y propiedades:
-format[string, Android only] : El formato del código-> QR_CODE
+format[string, Android only] : El formato del código-> QR_CODE(en este caso)
 result[string] : El contenido del código.
-contentType[int] :El tipo de contenido del código.Para determinar cual es se usan las siguientes constantes(int) definidas en el modulo(ti.barcode):
-    Barcode.URL=1
-	Barcode.SMS=2
-	Barcode.TELEPHONE=3
-	Barcode.TEXT=4
-	Barcode.CALENDAR=5
-	Barcode.GEOLOCATION=6
-	Barcode.EMAIL=7
-	Barcode.CONTACT=8
-	Barcode.BOOKMARK=9
-	Barcode.WIFI=10
-data[object]: devuelve los dos resultados parseados a JSON ejemplo: {"url":"http://goo.gl/70hW4"}
-*Nota: cada vez que la cámara escanea un código QR emite un sonido(bip)
+contentType[int] :El tipo de contenido del código.Para determinar cual es el tipo de contenido se usan las siguientes constantes(int) definidas por el modulo(ti.barcode):
+    Barcode.URL=>1
+	Barcode.SMS=>2
+	Barcode.TELEPHONE=>3
+	Barcode.TEXT=>4
+	Barcode.CALENDAR=>5
+	Barcode.GEOLOCATION=>6
+	Barcode.EMAIL=>7
+	Barcode.CONTACT=>8
+	Barcode.BOOKMARK=>9
+	Barcode.WIFI=>10
+*Nota: cada vez que la cámara escanea un código QR emite un sonido(bip)[Android only]
 */
 Barcode.addEventListener('success', function (e) {
-	/** Si no esta ya almacenado ese QR entonces lo guarda*/
+	/** Si no esta ya almacenado ese código QR entonces lo guarda en la variable scannedBarcodes*/
     if (!scannedBarcodes['' + e.result]) {
         scannedBarcodes[e.result] = true;
-        scannedBarcodesCount += 1;
         $.scanResult.text += e.result + ' ';
         $.scanContentType.text += parseContentType(e.contentType) + ' ';
         $.scanFormat.text += e.format + ' ';
@@ -77,7 +73,7 @@ function configurarQR(e) {
 	/** Si el sistema operativo es ANDROID*/
 	if(OS_ANDROID){
 		var hasCameraPermissions = Ti.Media.hasCameraPermissions();
-		/** Checar si ya tengo los permisos de camara*/
+		/** Checa si ya tengo los permisos de camara*/
 		if(!hasCameraPermissions){
 			Ti.Media.requestCameraPermissions(function(e){
 				if(e.success === true){
@@ -94,7 +90,7 @@ function configurarQR(e) {
 	/** Si el sistema operativo es IOS*/
 	if(OS_IOS){
 		var hasCameraPermissions = Ti.Media.hasCameraPermissions();
-		/** Checar si ya tengo los permisos de camara*/
+		/** Checa si ya tengo los permisos de camara*/
 		if(!hasCameraPermissions){
 			Ti.Media.requestCameraPermissions(function(e){
 				if(e.success === true){
@@ -120,13 +116,13 @@ function escanearQR(){
 	reset();	
 	var overlayVista = Alloy.createController('overlay').getView();	//la vista donde se escanea el código QR usando la camara
     /**
-     * Barcode.capture: Activa la cámara y comienza la captura para procesar un código de barras: tienes las siguientes propiedades:
+     * Barcode.capture: Activa la cámara y comienza la captura para procesar un código QR: tiene las siguientes propiedades:
      * animate: indica si se debe continuar en el caso de que la actividad actual y la actividad de la camara esten en distinta orientacion
-     * overlay es una view donde se muestra la actividad de la camara.
-     * showCancel: si incluir o no el boton de "cancelar"
-     * showRectangle: para incluir o no un rectangulo alrededor del area de escaner
-     * KeepOpen: true para mantener abierto el escaner despues de que se haya escaneado un codigo QR
-     * acceptedFormats: Una matriz opcional de constantes int que detalla qué formatos de código se aceptan.De forma predeterminada a todos los formatos.
+     * overlay: es una view donde se muestra la actividad de la camara.
+     * showCancel: si incluir o no el botón de "cancelar" en la vista overlay.
+     * showRectangle: para incluir o no un rectangulo alrededor del area de escaner.
+     * KeepOpen: true para mantener abierto el escaner despues de que se haya escaneado un codigo QR.
+     * acceptedFormats: Una matriz opcional de constantes int que detalla qué formatos de código se aceptan:
      * Barcode Format Constants:
 		FORMAT_NONE[int]
 		FORMAT_QR_CODE[int]
@@ -138,8 +134,8 @@ function escanearQR(){
 		FORMAT_CODE_128[int]
 		FORMAT_CODE_39[int]
 		FORMAT_ITF[int] 
-	*Nota: cada vez que la cámara escanea un código QR emite un sonido(bip)
-     */
+	*Nota:cada vez que la cámara escanea un código QR emite un sonido(bip), solo Android.
+    */
     Barcode.capture({
         animate: true,
         overlay: overlayVista,
@@ -153,7 +149,7 @@ function escanearQR(){
 }
 
 /**
- * Función que se encarga de escanear una imagen de la galeria.
+ * Función que escanea una imagen de la galeria del celular.
  * Nota: al escanear de la galeria no se emite sonido(bip).
  */
 function escanearGalleria(){
@@ -161,14 +157,14 @@ function escanearGalleria(){
     Ti.Media.openPhotoGallery({
         success: function (e) {
         	/**
-        	 *Barcode.parse: analiza un imagen para codigo QR. Tiene las sig propiedades:
+        	 *Barcode.parse: analiza una imagen(codigo QR). Tiene las sig propiedades:
         	 *image: La imagen que sera escaneada.
-        	 *acceptedFormats: Una matriz opcional de constantes int que detalla qué formatos de código se aceptan
+        	 *acceptedFormats: Una matriz de constantes(int), que detalla qué formatos de código se aceptan
         	 */
             Barcode.parse({
                 image: e.media,
                 acceptedFormats: [
-                    Barcode.FORMAT_QR_CODE
+                    Barcode.FORMAT_QR_CODE //formato: código QR
                 ]
             });
         }
@@ -176,19 +172,18 @@ function escanearGalleria(){
 }
 
 /**
- * Metodo que inicializa las variables a cero
- * es invocado tanto en escanear de camara como el escaneo de galeria
+ * Método que limpia las variables y las deja vacias.
+ * Es invocado al escanear de la cámara y al escanear de galería del dispositivo.
  */
 function reset() {
     scannedBarcodes = {};
-    scannedBarcodesCount = 0;
     $.scanResult.text = ' ';
     $.scanContentType.text = ' ';
     $.scanFormat.text = ' ';
 }
 
-/** Regresa el tipo de informacion que contiene el codigo QR (String)
-* @param contentType= es el tipo de contenido (e.contentType)
+/** Regresa el tipo de información que contiene el codigo QR (String)
+* @param contentType= es el tipo de contenido del QR(e.contentType)
 */
 function parseContentType(contentType) {
     switch (contentType) {
